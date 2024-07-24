@@ -3,7 +3,7 @@
     <h2 align="center">Register user</h2>
 
     <div align="center">
-        <form action="" method="post" class="col-md-3" >
+        <form action="" method="post" class="col-md-3" novalidate>
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="Register">
