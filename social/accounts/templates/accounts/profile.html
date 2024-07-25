@@ -3,7 +3,7 @@
     <h2 class="text-center">{{ user.username }}</h2>
     <div class="card">
         {% for post in posts %}
-            <a href="{% url 'home:post_detail' post.id post.slug %}" class="card-body">{{ post.body|truncatewords:8 }}</a>
+            <a href="{{ post.get_absolute_url }}}" class="card-body">{{ post.body|truncatewords:8 }}</a>
         {% endfor %}
     </div>
 {% endblock %}
