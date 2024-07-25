@@ -10,6 +10,12 @@ class UserRegisterView(View):
 
     form_class = UserRegistrationForm
     template_name = 'accounts/register.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
         form = self.form_class()
         return render(request, self.template_name, context={'form':form})
@@ -29,6 +35,12 @@ class UserLoginView(View):
     form_class = UserLoginForm
     template_name = 'accounts/login.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home:home')
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get(self,request):
         form = self.form_class
         return render(request, self.template_name, {'form':form})
@@ -45,8 +57,8 @@ class UserLoginView(View):
             messages.error(request, 'username or password is wrong', 'warning')
         return render(request, self.template_name, {'form':form})
 
-class UserLogutView(View):
+class UserLogoutView(View):
     def get(self, request):
-        login(request)
+        logout(request)
         messages.success(request, 'logged out successfully', 'success')
         return redirect('home:home')
