@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
     <h2 class="text-center">{{ user.username }}</h2>
+
     <div class="card">
         {% for post in posts %}
             <a href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8 }}</a>
         {% endfor %}
-    </div>
+    </div><br>
+
+    {% if request.user.id == user.id %}
+        <a href="{% url 'home:post_create' %}" class="btn btn-primary">Create new post</a>
+    {% endif %}
+
 {% endblock %}
