@@ -4,16 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="60eb3c27-b636-4d53-b50b-bec286350b7a" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/password_reset_done.html" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/password_reset_email.html" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/accounts/templates/accounts/password_reset_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/social/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/social/settings.py" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/accounts/templates/accounts/password_reset_confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/templates/accounts/password_reset_confirm.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
+>>>>>>> 47e7378 (add password change views)
     </list>
+=======
+    <list default="true" id="60eb3c27-b636-4d53-b50b-bec286350b7a" name="Changes" comment="" />
+>>>>>>> eac25ab (-)
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
