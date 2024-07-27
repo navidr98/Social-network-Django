@@ -72,8 +72,10 @@ class UserProfileView(LoginRequiredMixin, View):
 
     def get(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        posts = Post.objects.filter(user=user)
-        return render(request, 'accounts/profile.html', {'user':user, 'posts':posts})
+        # posts = Post.objects.filter(user=user)
+        posts = user.posts.all()   #using backward relations in models
+        return render(request, 'acc'
+                               'ounts/profile.html', {'user':user, 'posts':posts})
 
 
 class UserPasswordResetView(auth_views.PasswordResetView):
