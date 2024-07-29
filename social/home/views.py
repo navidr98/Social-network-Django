@@ -5,7 +5,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .forms import PostCreateUpdateForm , CommentCreateForm
 from django.utils.text import slugify
-
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 class HomeView(View):
     def get(self, request):
@@ -25,6 +26,7 @@ class PostDetailView(View):
         comments = self.post_instance.pcomments.filter(is_reply=False)
         return render(request, 'home/detail.html', {'post':self.post_instance, 'comments':comments, 'form':self.form_class})
 
+    @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         form =self.form_class(request.POST)
         if form.is_valid():
