@@ -7,6 +7,9 @@
     <p>{{ post.body}}</p><hr/>
 
     {% if request.user.is_authenticated %}
+
+    <a href="{% url 'home:post_like' post.id %}" class="btn btn-primary col-md-1">Like</a><br>
+
         <form action="" method="post">
             {% csrf_token %}
             {{ form.as_p }}
@@ -14,9 +17,9 @@
         </form>
     {% else %}
         <p class="alert alert-danger">only logged-in users can comment</p>
-    {% endif %}
+    {% endif %}<hr/>
 
-    <hr/>
+
 
     {% for comment in comments %}
         <div class="card text-bg-secondary text-white col-md-4">
@@ -27,7 +30,7 @@
                 {% with replies=comment.rcomments.all %}
                     {% for reply in replies %}
                         <p class="card-header">reply by {{ reply.user }} - {{reply.created|timesince}}</p>
-                        <p class="card-body">{{ reply.body }}</p>
+                        <p class="card-body" >{{ reply.body }}</p>
                     {% endfor %}
                 {% endwith %}
             </div>
