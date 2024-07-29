@@ -10,7 +10,7 @@
         <form action="" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Send">
+            <input type="submit" value="Comment">
         </form>
     {% else %}
         <p class="alert alert-danger">only logged-in users can comment</p>
@@ -22,6 +22,24 @@
         <div class="card text-bg-secondary text-white col-md-4">
             <p class="card-header">comment by {{ comment.user }} - {{comment.created|timesince}}</p>
             <p class="card-body">{{ comment.body }}</p>
+
+            <div class="bg-info p-3 m-2">
+                {% with replies=comment.rcomments.all %}
+                    {% for reply in replies %}
+                        <p class="card-header">reply by {{ reply.user }} - {{reply.created|timesince}}</p>
+                        <p class="card-body">{{ reply.body }}</p>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'home:add_reply' post.id comment.id %}" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="reply">
+                </form>
+            {% endif %}
+
         </div><br>
     {% empty %}
         <p>No comment yet</p>
@@ -32,6 +50,4 @@
         <a href="{% url 'home:post_update' post.id %}" class="btn btn-info">Update Post</a>
         <a href="{% url 'home:post_delete' post.id %}" class="btn btn-danger">Delete Post</a>
     {% endif %}
-
-
 {% endblock %}
