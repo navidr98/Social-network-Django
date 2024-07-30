@@ -22,5 +22,7 @@ class CommentReplyForm(forms.ModelForm):
         fields = ('body', )
 
 
+class PostSearchForm(forms.Form):
+    search = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'search posts here', 'class':'form-control'}))
 
 
