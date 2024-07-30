@@ -1,25 +1,52 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Post
+from .models import Post, Comment, Vote
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from .forms import PostCreateUpdateForm
+from .forms import PostCreateUpdateForm , CommentCreateForm , CommentReplyForm, PostSearchForm
 from django.utils.text import slugify
-
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 class HomeView(View):
+
+    form_class = PostSearchForm
+
     def get(self, request):
         posts = Post.objects.all()
-        return render(request, 'home/index.html', {'posts':posts})
+        if request.GET.get('search'):
+            posts = posts.filter(body__contains=request.GET['search'])
+        return render(request, 'home/index.html', {'posts':posts, 'search_form':self.form_class})
 
 
 
 class PostDetailView(View):
+    form_class = CommentCreateForm
+    form_class_reply = CommentReplyForm
 
-    def get(self, request, post_id, post_slug):
-        post = get_object_or_404(Post, pk=post_id, slug=post_slug)
-        # post = Post.objects.get(pk=post_id, slug=post_slug)
-        return render(request, 'home/detail.html', {'post':post})
+    def setup(self, request, *args, **kwargs):
+        self.post_instance = get_object_or_404(Post, pk=kwargs['post_id'], slug=kwargs['post_slug'])     # post = Post.objects.get(pk=post_id, slug=post_slug)
+        return super().setup(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        comments = self.post_instance.pcomments.filter(is_reply=False)
+        can_like = False
+        if request.user.is_authenticated and self.post_instance.user_can_like(request.user):
+            can_like = True
+        return render(request, 'home/detail.html',
+                      {'post':self.post_instance, 'comments':comments,'form':self.form_class,
+                       'reply_form':self.form_class_reply, 'can_like':can_like})
+
+    @method_decorator(login_required)
+    def post(self, request, *args, **kwargs):
+        form =self.form_class(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.user = request.user
+            new_comment.post = self.post_instance
+            new_comment.save()
+            messages.success(request, ' your comment submitted successfully', 'success')
+            return redirect('home:post_detail',self.post_instance.id, self.post_instance.slug)
 
 
 class PostDeleteView(LoginRequiredMixin, View):
@@ -83,6 +110,45 @@ class PostCreateView(LoginRequiredMixin, View):
             messages.success(request, 'you created new post', 'success')
             return redirect('home:post_detail', new_post.id, new_post.slug)
 
+
+
+class PostAddReplyView(LoginRequiredMixin, View):
+    form_class = CommentReplyForm
+
+    def post(self, request, post_id, comment_id):
+        post = get_object_or_404(Post, id=post_id)
+        comment = get_object_or_404(Comment, id=comment_id)
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.user = request.user
+            reply.post = post
+            reply.reply = comment
+            reply.is_reply = True
+            reply.save()
+            messages.success(request, 'your reply submitted successfully', 'success')
+        return redirect('home:post_detail', post.id, post.slug)
+
+class PostLikeView(LoginRequiredMixin, View):
+
+    def get(self, request, post_id):
+        post = get_object_or_404(Post, pk=post_id)
+        like = Vote.objects.filter(post=post, user=request.user)
+        if like.exists():
+            messages.error(request, 'you have already liked this post', 'danger')
+        else:
+            Vote.objects.create(post=post, user=request.user)
+            messages.success(request, 'you liked this post', 'success')
+        return redirect('home:post_detail', post.id, post.slug)
+
+
+class EditUserView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        pass
 
 
 

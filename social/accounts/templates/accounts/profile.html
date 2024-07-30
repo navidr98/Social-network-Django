@@ -3,7 +3,8 @@
     <h1 class="text-center">{{ user.username }}</h1>
     <h3 align="center">
         {% if request.user.id == user.id %}
-            <a href="{% url 'home:post_create' %}" class="btn btn-primary">Create new post</a>
+            <a href="{% url 'accounts:edit_user' %}" class="btn btn-primary" style="bg-$teal-400">Edit Profile</a><br>
+            <a href="{% url 'home:post_create' %}" class="btn btn-info" style="bg-$teal-400">Create new post</a>
         {% endif %}
     </h3>
 
@@ -17,9 +18,7 @@
 
     <div class="card">
         {% for post in posts %}
-            <div class="card">
-                <a href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8}}</a>
-            </div>
+            <a href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8}}</a>
         {% endfor %}
     </div><br>
 

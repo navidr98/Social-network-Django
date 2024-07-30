@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserRegistrationForm , UserLoginForm
+from .forms import UserRegistrationForm , UserLoginForm, EditUserForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login ,logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from home.models import Post
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 from .models import Relation
@@ -40,6 +39,10 @@ class UserLoginView(View):
     form_class = UserLoginForm
     template_name = 'accounts/login.html'
 
+    def setup(self, request, *args, **kwargs):
+        self.next = request.GET.get('next')
+        return super().setup(request, *args, **kwargs)
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect('home:home')
@@ -58,6 +61,8 @@ class UserLoginView(View):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'you logged in successfully', 'success')
+                if self.next:
+                    return redirect(self.next)
                 return redirect('home:home')
             messages.error(request, 'username or password is wrong', 'warning')
         return render(request, self.template_name, {'form':form})
@@ -122,4 +127,20 @@ class UserUnfollowView(LoginRequiredMixin, View):
             return redirect('accounts:user_profile', user.id)
 
 
+class EditUserView(LoginRequiredMixin, View):
+
+    form_class = EditUserForm
+
+    def get(self, request):
+        form = self.form_class(instance=request.user.profile, initial={'email':request.user.email})
+        return render(request, 'accounts/edit_profile.html', {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            request.user.email = form.cleaned_data['email']
+            request.user.save()
+            messages.success(request, 'profile edited successfully', 'success')
+        return redirect('accounts:user_profile', request.user.id)
 
