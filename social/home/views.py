@@ -142,8 +142,13 @@ class PostLikeView(LoginRequiredMixin, View):
         return redirect('home:post_detail', post.id, post.slug)
 
 
+class EditUserView(LoginRequiredMixin, View):
 
+    def get(self, request):
+        pass
 
+    def post(self, request):
+        pass
 
 
 
