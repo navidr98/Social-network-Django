@@ -26,6 +26,14 @@ class Post(models.Model):
     def likes_count(self):
         return self.pvotes.count()
 
+    def user_can_like(self, user):
+        user_like = user.uvotes.filter(post=self)
+        if user_like.exists():
+           return True
+        return False
+
+
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ucomments')
